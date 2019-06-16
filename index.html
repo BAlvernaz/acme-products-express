@@ -1,18 +1,140 @@
 <html>
   <head>
-<style>
-</style>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js'></script>
+    <style>
+      #navbar {
+        display: flex;
+        justify-content: space-around;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.0/react-router-dom.js'></script>
+    <script
+      src="https://unpkg.com/react@16/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.0/react-router-dom.js"></script>
   </head>
   <body>
-    <div id='root'></div>
-    <script type='text/babel'>
-      const root = document.querySelector('#root');
-      ReactDOM.render(<hr />, root);
+    <div id="root"></div>
+    <script type="text/babel">
+      const { HashRouter, Link, Route, NavLink } = ReactRouterDOM;
+
+      const Navbar = () => {
+        return (
+          <div id="navbar">
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/products">Products</NavLink>
+            <NavLink to="/create">Create a Product</NavLink>
+          </div>
+        );
+      };
+
+      const Home = () => {
+        return <h1>Home</h1>;
+      };
+
+      class Create extends React.Component {
+        constructor() {
+          super();
+          this.state = {
+            name: ""
+          };
+          this.onChange = this.onChange.bind(this);
+        }
+
+        componentDidMount() {
+          this.setState({ name: "Enter A New Product" });
+        }
+
+        onChange(ev) {
+          this.setState({ name: ev.target.value });
+        }
+
+        render() {
+          const { name } = this.state;
+          const { onChange } = this;
+          return (
+            <div>
+              <h1>Create a Product</h1>
+              <div id="formContainer">
+                <form method="POST" action="/api/newpro">
+                  <label htmlFor="name">
+                    New Product Name:
+                    <input
+                      type="text"
+                      name="name"
+                      value={name}
+                      onChange={onChange}
+                    />
+                  </label>
+                  <button type="submit" >
+                    Create Product
+                  </button>
+                </form>
+              </div>
+            </div>
+          );
+        }
+      }
+
+      class Products extends React.Component {
+        constructor() {
+          super();
+          this.state = {
+            products: []
+          };
+        }
+
+        async componentDidMount() {
+          const response = await axios.get("/api/products");
+          const data = response.data;
+          this.setState({ products: data });
+        }
+        render() {
+          console.log(this.state)
+          const { products } = this.state;
+          return (
+            <div>
+              <h1>Products</h1>
+              <div>
+                <ul>
+                  {products.map((product, idx) => {
+                    return (
+                      <div className="productContainer" key={idx}>
+                        <li>{product.name}</li>
+                        <button>Remove</button>
+                      </div>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          );
+        }
+      }
+
+      class App extends React.Component {
+        render() {
+          return (
+            <HashRouter>
+              <div>
+                <h1>Acme Products</h1>
+                <Navbar />
+                <Route exact path="/" component={Home} />
+                <Route path="/products" component={Products} />
+                <Route path="/create" component={Create} />
+              </div>
+            </HashRouter>
+          );
+        }
+      }
+
+      const root = document.querySelector("#root");
+      ReactDOM.render(<App />, root);
     </script>
   </body>
 </html>
