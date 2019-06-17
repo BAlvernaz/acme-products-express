@@ -5,6 +5,31 @@
         display: flex;
         justify-content: space-around;
       }
+
+      a {
+        border: 2px solid blue;
+        padding: 10px;
+      }
+
+      .active {
+        background-color: dodgerblue;
+        color: white;
+        text-decoration: none;
+      }
+
+      #formContainer {
+        border: 2px solid dodgerblue;
+        padding: 10px;
+
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -26,9 +51,9 @@
       const Navbar = () => {
         return (
           <div id="navbar">
-            <NavLink to="/">Home</NavLink>
-            <NavLink to="/products">Products</NavLink>
-            <NavLink to="/create">Create a Product</NavLink>
+            <NavLink to="/" exact activeClassName="active">Home</NavLink>
+            <NavLink to="/products" activeClassName="active">Products</NavLink>
+            <NavLink to="/create" activeClassName="active">Create a Product</NavLink>
           </div>
         );
       };
@@ -111,6 +136,7 @@
           return (
             <div>
               <h1>Products</h1>
+              <hr size="3" color="teal"/>
               <div>
                 <ul>
                   {products.map((product, idx) => {
@@ -118,6 +144,7 @@
                       <div className="productContainer" key={idx}>
                         <li>{product.name}</li>
                         <button onClick={() => onDelete(idx) }>Remove</button>
+                        <hr size="5" color="dodgerblue" />
                       </div>
                     );
                   })}

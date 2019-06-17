@@ -12,7 +12,7 @@ app.post("/api/newpro", (req, res, next) => {
     products.push(req.body);
     write(FILE, products).then(() => res.status(201));
   });
-  res.status(201).redirect('/')
+  res.redirect('/')
 });
 
 app.delete("/api/delpro/:idx", (req, res, next) => {
@@ -27,6 +27,7 @@ app.delete("/api/delpro/:idx", (req, res, next) => {
 app.get("/api/products", (req, res, next) => {
   read(FILE).then(products => res.send(products));
 });
+
 
 app.get("/", (req, res, next) =>
   res.sendFile(path.join(__dirname, "./index.html"))
