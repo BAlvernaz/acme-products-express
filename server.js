@@ -12,22 +12,21 @@ app.post("/api/newpro", (req, res, next) => {
     products.push(req.body);
     write(FILE, products).then(() => res.status(201));
   });
-  res.redirect("/products");
+  res.status(201).redirect('/')
 });
 
 app.delete("/api/delpro/:idx", (req, res, next) => {
   read(FILE)
-  .then(products => console.log(products.filter((product, i) => req.params.idx !== i)))
-  res.send("Deleted File")
+  .then(products => {
+     const delProd = products.filter((product, i) => req.params.idx*1 !== i)
+    write(FILE, delProd)
+    })
+    res.status(204).send("Removed Item")
 });
 
 app.get("/api/products", (req, res, next) => {
   read(FILE).then(products => res.send(products));
 });
-
-app.get("/products", (req, res, next) =>
-  res.sendFile(path.join(__dirname, "./index.html"))
-);
 
 app.get("/", (req, res, next) =>
   res.sendFile(path.join(__dirname, "./index.html"))
