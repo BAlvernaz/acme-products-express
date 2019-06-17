@@ -87,6 +87,7 @@
           this.state = {
             products: []
           };
+          this.onDelete = this.onDelete.bind(this)
         }
 
         async componentDidMount() {
@@ -94,9 +95,19 @@
           const data = response.data;
           this.setState({ products: data });
         }
+
+       async onDelete(idx) {
+          const { products } = this.state
+          const filiteredData = products.filter((product, i) => i !== idx)
+          await axios.delete(`/api/delpro/${idx}`)
+          this.setState({products: filiteredData})
+
+        }
+
         render() {
           console.log(this.state)
           const { products } = this.state;
+          const { onDelete } = this
           return (
             <div>
               <h1>Products</h1>
@@ -106,7 +117,7 @@
                     return (
                       <div className="productContainer" key={idx}>
                         <li>{product.name}</li>
-                        <button>Remove</button>
+                        <button onClick={() => onDelete(idx) }>Remove</button>
                       </div>
                     );
                   })}

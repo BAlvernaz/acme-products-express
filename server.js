@@ -5,24 +5,25 @@ const port = process.env.PORT || 3000;
 const FILE = path.join(__dirname, "data.json");
 const fs = require("fs");
 
-app.use(express.urlencoded())
+app.use(express.urlencoded());
 
-app.post('/api/newpro', (req, res, next) => {
+app.post("/api/newpro", (req, res, next) => {
+  read(FILE).then(products => {
+    products.push(req.body);
+    write(FILE, products).then(() => res.status(201));
+  });
+  res.redirect("/products");
+});
+
+app.delete("/api/delpro/:idx", (req, res, next) => {
   read(FILE)
-  .then(products => {
-    products.push(req.body)
-    write(FILE, products)
-  })
-  .then(() => res.status(201))
-  .then(() => res.redirect('/'))
-
-  })
-
+  .then(products => console.log(products.filter((product, i) => req.params.idx !== i)))
+  res.send("Deleted File")
+});
 
 app.get("/api/products", (req, res, next) => {
-  read(FILE)
-   .then(products => res.send(products))
-})
+  read(FILE).then(products => res.send(products));
+});
 
 app.get("/products", (req, res, next) =>
   res.sendFile(path.join(__dirname, "./index.html"))
